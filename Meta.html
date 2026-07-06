@@ -1356,15 +1356,28 @@
         history: JSON.stringify([{ type: 'created', title: 'Lead created', time: now, body: `Added via ${source}.` }])
       };
 
-      allLeads.push(newLead);
-      saveLeads();
-      showToast('success', 'Lead saved', `${name} has been added to your ledger.`);
+      try {
+        let response = await fetch(`${API_BASE_URL}/leads`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newLead)
+        });
 
-      document.getElementById('customerName').value = ""; document.getElementById('customerContact').value = "";
-      document.getElementById('model').value = ""; document.getElementById('followUpTime').value = "";
-      document.getElementById('leadNotes').value = ""; document.getElementById('leadTags').value = "";
-      refreshAllData();
-    }
+        if (response.ok) {
+          showToast('success', 'Lead saved', 'Cloud par successfully save ho gaya!');
+          // Input fields saaf karna
+          document.getElementById('customerName').value = ""; 
+          document.getElementById('customerContact').value = "";
+          document.getElementById('model').value = ""; 
+          document.getElementById('followUpTime').value = "";
+          refreshAllData(); 
+        } else {
+          showToast('error', 'Save failed', 'Database error a raha hai.');
+        }
+      } catch (err) {
+        showToast('error', 'Network Error', 'Server se connect nahi ho paaya.');
+      }
+
 
     function promptActionModal(leadId, actionType) {
       activeActionLeadId = leadId;
