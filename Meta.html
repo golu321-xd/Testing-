@@ -1221,17 +1221,35 @@
       }
     }
 
-
-    function loadUserProfile() {
-      const uId = users[currentUser].userId;
-      const pic = users[currentUser].profilePic || defaultPfp;
-      document.getElementById('current-user-display').innerText = currentUser;
-      document.getElementById('current-userid-display').innerText = uId;
-      document.getElementById('sidebar-pfp').src = pic;
-      document.getElementById('mobile-user-display').innerText = currentUser;
-      document.getElementById('mobile-userid-display').innerText = uId;
-      document.getElementById('mobile-pfp').src = pic;
-    }
+function loadUserProfile() {
+  if (!currentUser) return;
+  
+  // Naye device ke liye safe check - agar data nahi hai toh empty object {} lega
+  const userObj = (users && users[currentUser]) ? users[currentUser] : {};
+  
+  // ID aur Photo set karna (Ya toh object se, ya storage se, ya default)
+  const uId = userObj.userId || localStorage.getItem('activeSessionUserId') || '—';
+  const pic = userObj.profilePic || localStorage.getItem('activeSessionProfilePic') || defaultPfp;
+  
+  // 1. Top Left Corner (Desktop/Badi screen ke liye)
+  const userDisp = document.getElementById('current-user-display');
+  const idDisp = document.getElementById('current-userid-display');
+  const sidebarPfp = document.getElementById('sidebar-pfp');
+  
+  if (userDisp) userDisp.innerText = currentUser;
+  if (idDisp) idDisp.innerText = uId;
+  if (sidebarPfp) sidebarPfp.src = pic;
+  
+  // 2. Mobile Menu (Choti screen ke liye)
+  const mobUserDisp = document.getElementById('mobile-user-display');
+  const mobIdDisp = document.getElementById('mobile-userid-display');
+  const mobPfp = document.getElementById('mobile-pfp');
+  
+  if (mobUserDisp) mobUserDisp.innerText = currentUser;
+  if (mobIdDisp) mobIdDisp.innerText = uId;
+  if (mobPfp) mobPfp.src = pic;
+}
+  
 
     function confirmLogout() {
       openConfirm({
