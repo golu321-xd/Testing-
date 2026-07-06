@@ -1342,11 +1342,18 @@
       const now = new Date().toISOString();
 
       const newLead = {
-        id: 'L-' + Date.now().toString().slice(-6), owner: currentUser, customerName: name, customerContact: contact,
-        model: model, source: source, priority: priority, notes: notes, status: 'Open', followUpTime: time,
-        createdAt: now, tags: tags,
-        lostReason: "", wonSerial: "", wonInvoice: "", wonDate: "", wonArticle: "", wonModel: "", wonAmount: "",
-        history: [{ type: 'created', title: 'Lead created', time: now, body: `Added via ${source}. Priority: ${priority}.` }]
+        id: 'L-' + Date.now().toString().slice(-6),
+        owner: currentUser,
+        customer_name: name,           // SQL Table column: customer_name
+        customer_contact: contact,     // SQL Table column: customer_contact
+        model: model,
+        source: source,
+        priority: priority,
+        notes: notes,
+        status: 'Open',
+        follow_up_time: time,          // SQL Table column: follow_up_time
+        tags: tagsRaw ? tagsRaw.split(',').map(t => t.trim()) : [],
+        history: JSON.stringify([{ type: 'created', title: 'Lead created', time: now, body: `Added via ${source}.` }])
       };
 
       allLeads.push(newLead);
